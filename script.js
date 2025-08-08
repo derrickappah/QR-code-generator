@@ -114,7 +114,7 @@ function showScanView() {
   document.title = "Scan QR Code - App";
   
   startScanner();
-  addTorchButton(); // Add torch toggle button
+  addTorchButton();
 }
 
 function showHistoryView() {
@@ -141,7 +141,7 @@ function showSettingsView() {
 function getSettings() {
   const settings = JSON.parse(localStorage.getItem('qrSettings')) || {};
   return {
-    colorDark: settings.colorDark || '#90EE90', // Changed default to light green
+    colorDark: settings.colorDark || '#90EE90',
     colorLight: settings.colorLight || '#000000',
     logoDataUrl: settings.logoDataUrl || ''
   };
@@ -204,10 +204,11 @@ function generateQRCode() {
   if (text) {
     qrcodeContainer.innerHTML = '';
 
+    const size = Math.min(window.innerWidth * 0.8, 256);
     const qrcode = new QRCode(qrcodeContainer, {
       text: text,
-      width: 256,
-      height: 256,
+      width: size,
+      height: size,
       colorDark: settings.colorDark,
       colorLight: settings.colorLight,
     });
@@ -218,7 +219,6 @@ function generateQRCode() {
         const context = canvas.getContext('2d');
         const finalCanvas = document.createElement('canvas');
         const finalContext = finalCanvas.getContext('2d');
-        const size = 256;
         finalCanvas.width = size;
         finalCanvas.height = size;
         finalContext.drawImage(canvas, 0, 0, size, size);
@@ -236,7 +236,7 @@ function generateQRCode() {
           };
           logo.onerror = () => {
             console.error('Failed to load logo image.');
-            finalizeQR(finalCanvas, data); // Proceed without logo silently
+            finalizeQR(finalCanvas, data);
           };
           logo.src = settings.logoDataUrl;
         } else {
@@ -416,7 +416,7 @@ function startNewScanner() {
   const config = {
     fps: 10,
     qrbox: { width: 250, height: 250 },
-    showTorchButtonIfSupported: true // Adds torch button if supported
+    showTorchButtonIfSupported: true
   };
   html5QrCode = new Html5Qrcode("reader");
 
@@ -447,7 +447,6 @@ function startNewScanner() {
   });
 }
 
-// Function to toggle torch
 function toggleTorch(isOn) {
   if (html5QrCode && (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING || html5QrCode.getState() === Html5QrcodeScannerState.PAUSED)) {
     const constraints = {
@@ -463,13 +462,11 @@ function toggleTorch(isOn) {
   }
 }
 
-// Add a custom button to toggle torch (optional, for manual control)
 function addTorchButton() {
   const torchButton = document.createElement("button");
   torchButton.textContent = "Toggle Torch";
   torchButton.classList.add("flex", "cursor-pointer", "items-center", "justify-center", "overflow-hidden", "rounded-lg", "h-10", "px-4", "bg-[#0d80f2]", "text-slate-50", "text-sm", "font-bold", "leading-normal", "tracking-[0.015em]", "mt-4");
   torchButton.addEventListener("click", () => {
-    // Check current torch state (if supported) and toggle
     if (html5QrCode) {
       html5QrCode.getRunningTrackSettings()
         .then((settings) => {
@@ -478,18 +475,16 @@ function addTorchButton() {
         })
         .catch((err) => {
           console.error("Could not check torch state:", err);
-          toggleTorch(true); // Default to turning on if state check fails
+          toggleTorch(true);
         });
     }
   });
-  // Only append if not already present (avoid duplicates)
   if (!document.querySelector("#torch-button")) {
     torchButton.id = "torch-button";
     scanView.appendChild(torchButton);
   }
 }
 
-// Event Listeners
 generateTab.addEventListener('click', showGenerateView);
 scanTab.addEventListener('click', showScanView);
 historyTab.addEventListener('click', showHistoryView);
@@ -509,5 +504,4 @@ qrLogoFile.addEventListener('change', updateLogoPreview);
 historySearch.addEventListener('input', (e) => loadHistory(e.target.value));
 saveSettingsBtn.addEventListener('click', saveSettings);
 
-// Initialize the app on the generate view
 showGenerateView();
