@@ -9,6 +9,14 @@
 .view-container {
   max-width: 480px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure inputs and buttons are responsive */
+input, select, button {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Custom styles for responsive history */
@@ -32,5 +40,19 @@
 
   .history-item .button-group button {
     width: 100%;
+  }
+
+  /* Ensure other elements scale on mobile */
+  .view-container {
+    padding: 1rem;
+  }
+
+  #qrcode-container img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  #reader {
+    max-width: 100%;
   }
 }
