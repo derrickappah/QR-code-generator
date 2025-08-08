@@ -1,0 +1,36 @@
+.text-active {
+  color: #0d141c;
+}
+
+.text-inactive {
+  color: #49739c;
+}
+
+.view-container {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Custom styles for responsive history */
+@media (max-width: 640px) {
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .history-item .qr-wrapper {
+    width: 100%;
+    max-width: 80px;
+  }
+
+  .history-item .button-group {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .history-item .button-group button {
+    width: 100%;
+  }
+}
