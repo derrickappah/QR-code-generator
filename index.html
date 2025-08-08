@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&family=Inter%3Awght%40400%3B500%3B700%3B900&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+    <title>QR Code</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
+      <div class="pb-20">
+        <div class="flex items-center bg-slate-50 p-4 pb-2 justify-center">
+          <h2 id="main-title" class="text-[#0d141c] text-lg font-bold leading-tight tracking-[-0.015em]">QR Code</h2>
+        </div>
+
+        <div id="generate-view" class="view-container active-view p-4">
+          <div class="flex flex-col gap-4">
+            <label class="flex flex-col min-w-40 flex-1">
+              <span class="text-[#0d141c] text-sm font-medium mb-1">QR Code Type</span>
+              <select id="qr-type" class="form-select w-full rounded-lg border border-[#cedbe8] bg-white h-12 text-[#0d141c] focus:outline-0 focus:ring-0">
+                <option value="text">Text</option>
+                <option value="url">URL</option>
+                <option value="wifi">Wi-Fi</option>
+                <option value="vcard">Contact (vCard)</option>
+              </select>
+            </label>
+            
+            <div id="text-input" class="flex flex-col">
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Text</span>
+                <input
+                  id="qr-text"
+                  placeholder="Enter text to generate QR code"
+                  class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 placeholder:text-[#49739c] p-[15px] text-base"
+                  value=""
+                />
+              </label>
+            </div>
+
+            <div id="url-input" class="hidden flex-col">
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">URL</span>
+                <input
+                  id="qr-url"
+                  placeholder="https://"
+                  class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 placeholder:text-[#49739c] p-[15px] text-base"
+                  value=""
+                />
+              </label>
+            </div>
+
+            <div id="wifi-input" class="hidden flex-col gap-4">
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Network Name (SSID)</span>
+                <input
+                  id="wifi-ssid"
+                  placeholder="My Wi-Fi"
+                  class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 placeholder:text-[#49739c] p-[15px] text-base"
+                  value=""
+                />
+              </label>
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Password</span>
+                <input
+                  id="wifi-password"
+                  type="password"
+                  placeholder="Password"
+                  class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 placeholder:text-[#49739c] p-[15px] text-base"
+                  value=""
+                />
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" id="wifi-hidden" class="form-checkbox h-4 w-4 text-[#0d80f2] border-[#cedbe8] rounded">
+                <span class="text-[#0d141c] text-sm">Hidden network</span>
+              </label>
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Encryption</span>
+                <select id="wifi-encryption" class="form-select w-full rounded-lg border border-[#cedbe8] bg-white h-12 text-[#0d141c] focus:outline-0 focus:ring-0">
+                  <option value="WPA">WPA/WPA2</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">No Password</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="vcard-input" class="hidden flex-col gap-4">
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Name</span>
+                <input id="vcard-name" placeholder="John Doe" class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 placeholder:text-[#49739c] p-[15px] text-base">
+              </label>
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Phone Number</span>
+                <input id="vcard-tel" placeholder="+1234567890" class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 placeholder:text-[#49739c] p-[15px] text-base">
+              </label>
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Email</span>
+                <input id="vcard-email" placeholder="john@example.com" class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 placeholder:text-[#49739c] p-[15px] text-base">
+              </label>
+            </div>
+          </div>
+          <div class="flex px-4 py-3 justify-center">
+            <button
+              id="generate-btn"
+              class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0d80f2] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] mt-4"
+            >
+              <span class="truncate">Generate</span>
+            </button>
+          </div>
+          <div class="flex flex-col w-full grow bg-slate-50 @container p-4 items-center">
+            <div id="qrcode-container" class="w-full flex justify-center items-center p-4">
+            </div>
+            <button id="download-btn" class="hidden mt-4 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#14b8a6] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]">
+              <span class="truncate">Download QR Code</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="history-view" class="hidden view-container p-4">
+          <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
+            <h3 class="text-[#0d141c] text-lg font-bold">History</h3>
+            <button id="clear-history-btn" class="text-sm text-red-500 hover:text-red-700 mt-2 sm:mt-0">Clear History</button>
+          </div>
+          <input id="history-search" type="text" placeholder="Search history..." class="form-input w-full rounded-lg border border-[#cedbe8] bg-white h-10 px-3 mb-4">
+          <div id="history-list" class="flex flex-col gap-4">
+          </div>
+        </div>
+        
+        <div id="settings-view" class="hidden view-container p-4">
+          <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 mt-4">
+              <h3 class="text-[#0d141c] text-lg font-bold">QR Code Colors</h3>
+              <div class="flex flex-col gap-4">
+                <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                  <label for="color-dark" class="text-[#0d141c] font-medium">Foreground Color:</label>
+                  <input type="color" id="color-dark" value="#90EE90" class="w-12 h-12 p-1 border border-gray-300 rounded-md">
+                </div>
+                <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                  <label for="color-light" class="text-[#0d141c] font-medium">Background Color:</label>
+                  <input type="color" id="color-light" value="#000000" class="w-12 h-12 p-1 border border-gray-300 rounded-md">
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-4 mt-4">
+              <h3 class="text-[#0d141c] text-lg font-bold">Add Logo</h3>
+              <label class="flex flex-col min-w-40 flex-1">
+                <span class="text-[#0d141c] text-sm font-medium mb-1">Logo Image (Optional)</span>
+                <input
+                  id="qr-logo-file"
+                  type="file"
+                  accept="image/*"
+                  class="form-input flex w-full min-w-0 flex-1 rounded-lg text-[#0d141c] border border-[#cedbe8] bg-slate-50 p-[15px] text-base"
+                />
+              </label>
+              <div id="logo-preview-container" class="hidden flex justify-center items-center">
+                <img id="logo-preview" class="w-20 h-20 object-contain rounded-lg border border-gray-300">
+              </div>
+            </div>
+            
+            <div class="flex justify-center mt-4">
+              <button id="save-settings-btn" class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0d80f2] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]">
+                <span class="truncate">Save Settings</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="scan-view" class="hidden view-container p-4">
+          <h3 class="text-[#0d141c] text-lg font-bold mb-4">Scan</h3>
+          <div id="reader" class="w-full max-w-sm mx-auto mb-4"></div>
+          <div id="scan-result" class="hidden bg-white p-4 rounded-lg shadow-sm">
+            <p class="text-[#0d141c] font-medium">Result:</p>
+            <p id="scanned-text" class="text-[#49739c] text-sm break-all mt-2"></p>
+            <div class="flex justify-center mt-4">
+              <button id="rescan-btn" class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0d80f2] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]">
+                <span class="truncate">Re-scan</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fixed bottom-0 left-0 right-0 z-10 flex gap-2 border-t border-[#e7edf4] bg-slate-50 px-4 pb-3 pt-2">
+        <a id="generate-tab" class="just flex flex-1 flex-col items-center justify-end gap-1 cursor-pointer" href="#" data-tab-name="QR Code">
+          <div class="text-active flex h-8 items-center justify-center" data-icon="QrCode" data-size="24px" data-weight="fill">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+              <rect x="40" y="40" width="80" height="80" rx="16"></rect>
+              <rect x="40" y="136" width="80" height="80" rx="16"></rect>
+              <rect x="136" y="40" width="80" height="80" rx="16"></rect>
+              <path d="M144,184a8,8,0,0,0,8-8V144a8,8,0,0,0-16,0v32A8,8,0,0,0,144,184Z"></path>
+              <path d="M208,152H184v-8a8,8,0,0,0-16,0v56H144a8,8,0,0,0,0,16h32a8,8,0,0,0,8-8V168h24a8,8,0,0,0,0-16Z"></path>
+              <path d="M208,184a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V192A8,8,0,0,0,208,184Z"></path>
+            </svg>
+          </div>
+          <p class="text-active text-xs font-medium leading-normal tracking-[0.015em]">Generate</p>
+        </a>
+        <a id="scan-tab" class="just flex flex-1 flex-col items-center justify-end gap-1 cursor-pointer" href="#" data-tab-name="Scan QR Code">
+          <div class="text-inactive flex h-8 items-center justify-center" data-icon="Camera" data-size="24px" data-weight="regular">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+              <path
+                d="M216,48H176L160,28A16,16,0,0,0,146.7,20H109.3A16,16,0,0,0,96,28L80,48H40A24,24,0,0,0,16,72V192a24,24,0,0,0,24,24H216a24,24,0,0,0,24-24V72A24,24,0,0,0,216,48ZM128,184a48,48,0,1,1,48-48A48,48,0,0,1,128,184Z"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-inactive text-xs font-medium leading-normal tracking-[0.015em]">Scan</p>
+        </a>
+        <a id="history-tab" class="just flex flex-1 flex-col items-center justify-end gap-1 cursor-pointer" href="#" data-tab-name="Generated History">
+          <div class="text-inactive flex h-8 items-center justify-center" data-icon="ClockCounterClockwise" data-size="24px" data-weight="regular">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+              <path
+                d="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-inactive text-xs font-medium leading-normal tracking-[0.015em]">History</p>
+        </a>
+        <a id="settings-tab" class="just flex flex-1 flex-col items-center justify-end gap-1 cursor-pointer" href="#" data-tab-name="Settings">
+          <div class="text-inactive flex h-8 items-center justify-center" data-icon="Gear" data-size="24px" data-weight="regular">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+              <path
+                d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14,8,8,0,0,0,5.1-2.64L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-inactive text-xs font-medium leading-normal tracking-[0.015em]">Settings</p>
+        </a>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
